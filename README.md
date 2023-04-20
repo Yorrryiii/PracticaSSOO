@@ -4,16 +4,17 @@
 ![Badge en Desarollo](https://img.shields.io/badge/STATUS-EN%20DESAROLLO-green)
 
 <h2> Índice </h2>
-*[Título e imagen de portada](#Título-e-imagen-de-portada)
 
-*[Índice](#Índice)
+[Título e imagen de portada](#Título-e-imagen-de-portada)
 
-*[Descripción del proyecto](#descripción-del-proyecto)
+[Índice](#Índice)
 
-*[Estado del proyecto](#Estado-del-proyecto)
+[Descripción del proyecto](#descripción-del-proyecto)
 
-*[Características de la aplicación y demostración](#Características-de-la-aplicación-y-demostración)
+[Estado del proyecto](#Estado-del-proyecto)
 
-*[Personas-Desarrolladores del Proyecto](#personas-desarrolladores)
+[Características de la aplicación y demostración](#Características-de-la-aplicación-y-demostración)
 
-*[Conclusión](#conclusión)
+[Personas-Desarrolladores del Proyecto](#personas-desarrolladores)
+
+[Conclusión](#conclusión)
