@@ -1,11 +1,12 @@
 package ficheros;
 
 public class EntradaFAT {
+
     public boolean disponible;
     public int siguiente;
     public boolean fin;
 
-    public EntradaFAT(boolean disponible, int siguiente, boolean end) {
+    public EntradaFAT(boolean disponible, int siguiente, boolean fin) {
         this.disponible = disponible;
         this.siguiente = siguiente;
         this.fin = fin;
