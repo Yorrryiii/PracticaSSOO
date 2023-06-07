@@ -39,4 +39,10 @@ public class EntradaDir {
         this.clusterInicio = clusterInicio;
     }
 
+    @Override
+	public String toString() {
+		return "\nEntradaDir [nombre=" + nombre + ", esDirectorio=" + esDirectorio + ", clusterInicio=" + clusterInicio
+				+ "]";
+	}
+
 }

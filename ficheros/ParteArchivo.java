@@ -12,12 +12,12 @@ public class ParteArchivo extends Cluster {
         return contenido;
     }
 
-    public void setContenido(){
+    public void setContenido(String contenido){
         this.contenido = contenido;
     }
 
     @Override
     public String toString(){
-        return contenido;
+    	return "\n"+ super.numCluster + ": " + contenido;
     }
 }

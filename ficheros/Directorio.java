@@ -24,11 +24,6 @@ public class Directorio extends Cluster {
     public void setEntradasDIR(ArrayList<EntradaDir> entradasDIR) {
         this.entradasDIR = entradasDIR;
     }
-    
-    @Override
-    public String toString() {
-        return "Directorio [nombre=" + nombre + ", entradasDIR=" + entradasDIR + "]";
-    }
 
     public String getNombre() {
         return nombre;
@@ -36,5 +31,10 @@ public class Directorio extends Cluster {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    @Override
+    public String toString() {
+        return "\n"+ super.numCluster + ": Directorio [nombre=" + nombre + ", entradasDIR=" + entradasDIR + "]";
     }
 }

@@ -29,10 +29,28 @@ public class SistemaFicheros {
 
     public void crearDirectorio(String nombreDirectorio, String nombreDirectorioDondeGuardarArchivo) {
 
-        ArrayList<Cluster> listaClustersLibres = buscarClustersLibres(1); //Un directorio solo ocupa un cluster
-        escribirEntradasFAT(listaClustersLibres);
-        Directorio  directorioDondeGuardarArchivo = buscarDirectorioPorNombre(nombreDirectorioDondeGuardarArchivo);
-        crearEntradaDirectorioEnDirectorio(nombreDirectorio, true, listaClustersLibres.get(0));
+    	ArrayList<Cluster> listaClustersLibres = buscarClustersLibres(1);
+    	
+        if(listaClustersLibres.size() == 0) {
+            System.err.println("Error: no hay suficientes clusters libres para crear el directorio, APRENDE A CONTAR");
+        }
+        else {
+            
+            Directorio directorioDondeGuardarArchivo = buscarDirectorioPorNombre(nombreDirectorioDondeGuardarArchivo);
+            
+            //Si no existe la ruta, no crearemos el archivo
+            if(directorioDondeGuardarArchivo != null) {
+            	escribirDatosDirectorioEnClustersLibres(nombreDirectorio, listaClustersLibres);
+
+                escribirEntradasFAT(listaClustersLibres);
+                
+            	System.out.println("Esta es tu carpeta mi REY: " + directorioDondeGuardarArchivo.nombre);
+            	crearEntradaDirectorioEnDirectorio(nombreDirectorio, true,
+                		directorioDondeGuardarArchivo, listaClustersLibres.get(0).numCluster);
+            }
+            else {System.err.println("Error: la ruta especificada no existe");}
+            
+        }
         
     }
 
@@ -45,13 +63,21 @@ public class SistemaFicheros {
             System.err.println("Error: no hay suficientes clusters libres para crear el archivo, APRENDE A CONTAR");
         }
         else {
-            escribirDatosArchivoEnClustersLibres(nombreDelArchivo, listaClustersLibres);
-
-            escribirEntradasFAT(listaClustersLibres);
             
-            Directorio  directorioDondeGuardarArchivo = buscarDirectorioPorNombre(nombreDirectorioDondeGuardarArchivo);
-            System.out.println("Esta es tu carpeta mi REY: " + directorioDondeGuardarArchivo.nombre);
-            //crearEntradaDirectorioEnDirectorio(nombreDelArchivo, false, listaClustersLibres.get(0));
+            Directorio directorioDondeGuardarArchivo = buscarDirectorioPorNombre(nombreDirectorioDondeGuardarArchivo);
+            
+            //Si no existe la ruta, no crearemos el archivo
+            if(directorioDondeGuardarArchivo != null) {
+            	escribirDatosArchivoEnClustersLibres(nombreDelArchivo, listaClustersLibres);
+
+                escribirEntradasFAT(listaClustersLibres);
+                
+            	System.out.println("Esta es tu carpeta mi REY: " + directorioDondeGuardarArchivo.nombre);
+            	crearEntradaDirectorioEnDirectorio(nombreDelArchivo, false,
+                		directorioDondeGuardarArchivo, listaClustersLibres.get(0).numCluster);
+            }
+            else {System.err.println("Error: la ruta especificada no existe");}
+            
         }
 
     }
@@ -62,7 +88,20 @@ public class SistemaFicheros {
                 if(listaClustersLibres.get(i).equals(clusters.get(j))) {
                     Cluster aux = clusters.get(j);
                     clusters.remove(aux);
-                    clusters.add(j, new ParteArchivo(j, nombreDelArchivo)); //Restamos 1 ya que se esta cargando el cluster que habia
+                    clusters.add(j, new ParteArchivo(j, nombreDelArchivo + " " + (i+1) 
+                    		+ "/" + listaClustersLibres.size())); //Restamos 1 ya que se esta cargando el cluster que habia
+                }
+            }
+        }
+    }
+    
+    private void escribirDatosDirectorioEnClustersLibres(String nombreDir, ArrayList<Cluster> listaClustersLibres) {
+    	for(int i = 0; i < listaClustersLibres.size(); i++) {
+            for(int j = 0; j < cantidadClusters; j++) {
+                if(listaClustersLibres.get(i).equals(clusters.get(j))) {
+                    Cluster aux = clusters.get(j);
+                    clusters.remove(aux);
+                    clusters.add(j, new Directorio(nombreDir, j)); //Restamos 1 ya que se esta cargando el cluster que habia
                 }
             }
         }
@@ -83,33 +122,46 @@ public class SistemaFicheros {
         return clustersLibres;
     }
 
-    private void crearEntradaDirectorioEnDirectorio(String nombreDelArchivo, boolean esDirectorio, Cluster cluster) {
+    private void crearEntradaDirectorioEnDirectorio(String nombreDelArchivo, boolean esDirectorio, Directorio dir, int clusterInicio) {
+    	
+    	dir.entradasDIR.add(new EntradaDir(nombreDelArchivo, esDirectorio, clusterInicio));
+    	
     }
 
     private Directorio buscarDirectorioPorNombre(String nombreDirectorioDondeGuardarArchivo) {
         //Ruta donde buscar el directorio
-        if(nombreDirectorioDondeGuardarArchivo.equals("root")) {
+    	String[] ruta = nombreDirectorioDondeGuardarArchivo.split("/");
+        if(ruta[0].equals("root") && ruta.length == 1) {
             return this.root;
-        }else{
-            return buscarDirectorioRecursivo(nombreDirectorioDondeGuardarArchivo, this.root);
+        }
+        else if(ruta[0].equals("root") && ruta[1].equals("") && ruta.length == 2) {
+        	return this.root;
+        }
+        else {
+        	//Empieza en 1 porque el primero es root
+            return buscarDirectorioRecursivo(this.root, ruta, 1);
         }
     }
     
-    private Directorio buscarDirectorioRecursivo(String nombreDirectorioDondeGuardarArchivo, Directorio current) {
+    private Directorio buscarDirectorioRecursivo(Directorio current, 
+    		String[] ruta, int currentPosition) {
 
         for(int i = 0; i < current.entradasDIR.size(); i++) {
             if(current.entradasDIR.get(i).esDirectorio) {
-                if(current.entradasDIR.get(i).nombre.equals(nombreDirectorioDondeGuardarArchivo)) {
-                    System.out.println("Eres medio bobo y el directorio no existe");
+                if(current.entradasDIR.get(i).nombre.equals(ruta[currentPosition])
+                		&& ruta.length == currentPosition + 1) {
                     return (Directorio) clusters.get(current.entradasDIR.get(i).clusterInicio);
                 }
-                else {
-                    return buscarDirectorioRecursivo(nombreDirectorioDondeGuardarArchivo, (Directorio) 
-                                clusters.get(current.entradasDIR.get(i).clusterInicio));
+                else if(current.entradasDIR.get(i).nombre.equals(ruta[currentPosition])){
+                	currentPosition = currentPosition + 1;
+                    return buscarDirectorioRecursivo((Directorio) 
+                                clusters.get(current.entradasDIR.get(i).clusterInicio), ruta
+                                , currentPosition);
                 }
             }
         }
-        return null; // El directorio no fue encontrado
+    	
+    	return null; // El directorio no fue encontrado
     }
         
         
@@ -118,17 +170,25 @@ public class SistemaFicheros {
         
         for(int i = 0; i < listaClustersLibres.size(); i++) {
             int indexOfCluster = listaClustersLibres.get(i).numCluster;
+            
             EntradaFAT current = entradas.get(indexOfCluster);
             current.disponible = false;
             if(i == listaClustersLibres.size() - 1) {
                 current.fin = true;
             }
             else {
+            	int indexOfNextCluster = listaClustersLibres.get(i+1).numCluster;
                 current.fin = false;
-                current.siguiente = indexOfCluster + 1; // Ya que es la referencia a la siguiente entrada de la FAT
+                current.siguiente = indexOfNextCluster;
             }
         }
 
     }
+
+	@Override
+	public String toString() {
+		return "SistemaFicheros [cantidadClusters=" + cantidadClusters + ", \nentradas=" + entradas + ", \nroot=" + root
+				+ ", \nclusters=" + clusters + "]";
+	}
 
 }

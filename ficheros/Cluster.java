@@ -6,7 +6,10 @@ public class Cluster {
     public Cluster(int numCluster) {
         this.numCluster = numCluster;
     }
+
+    @Override
+    public String toString() {
+        return "\n" +numCluster + ": Empty";
+    }
+    
 }
-
-
-
