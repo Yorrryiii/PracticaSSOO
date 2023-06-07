@@ -44,6 +44,6 @@ public class EntradaFAT {
 
     @Override
     public String toString() {
-        return "Disponible: " + disponible + " Siguiente: " + siguiente + " Fin: " + fin;
+        return "\nDisponible: " + disponible + " Siguiente: " + siguiente + " Fin: " + fin;
     }
 }
