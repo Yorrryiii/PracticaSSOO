@@ -163,9 +163,7 @@ public class SistemaFicheros {
     	
     	return null; // El directorio no fue encontrado
     }
-        
-        
-   
+    
     private void escribirEntradasFAT(ArrayList<Cluster> listaClustersLibres) {
         
         for(int i = 0; i < listaClustersLibres.size(); i++) {
@@ -183,6 +181,57 @@ public class SistemaFicheros {
             }
         }
 
+    }
+
+    public void borrarArchivo(String rutaCompleta) {
+    	
+    	String[] rutaArchivo = rutaCompleta.split("/");
+    	//Rescatamos el nombre del archivo, que estara en la ultima posicion del array
+    	String nombreArchivo = rutaArchivo[rutaArchivo.length-1];
+    	//Creamos una String para volcar dentro de esta la ruta del padre
+    	String rutaPadre = new String();
+    	
+    	//La ruta padre del archivo siempre sera de uno menos que la del hijo
+    	for(int i = 0; i < rutaArchivo.length - 1; i++) {
+    		
+    		//Si es la ultima iteracion, no añadimos la barra a la ruta
+    		if(i == rutaArchivo.length - 2) {
+    			rutaPadre += rutaArchivo[i];
+    		}
+    		else {
+    			rutaPadre += rutaArchivo[i] + "/";
+    		}
+    		
+    	}
+    	
+    	//Rescatamos el directorio en el que esta el archivo
+    	Directorio dir = buscarDirectorioPorNombre(rutaPadre);
+    	//Si es null, es porque la ruta no existe, por lo que pondremos un mensaje de error
+    	if(dir == null) {
+    		System.err.println("Error: la ruta especificada no existe");
+    		return;
+    	}
+    	else {
+    		for(int i = 0; i < dir.getEntradasDIR().size(); i++) {
+    			
+    			if(dir.getEntradasDIR().get(i).nombre.equals(nombreArchivo)) {
+    				int numCluster = dir.getEntradasDIR().get(i).clusterInicio;
+        			//Ponemos a cierto (true) el disponible para indicar que esta libre y se puede escribir
+        			entradas.get(numCluster).disponible = true;
+        			while(!entradas.get(numCluster).fin) {
+        				//Si no indica fin cierto, nos moveremos para poner todo a disponible
+        				numCluster = entradas.get(numCluster).siguiente;
+        				entradas.get(numCluster).disponible = true;
+        			}
+        			return; //Si lo encuentra dejamos de comprobar el resto
+    			}
+    			
+    		}
+    		//Si lo ha encontrado no llegara hasta aqui, por tanto podemos imprimir un mensaje de error
+    		System.err.println("Error: no se ha podido encontrar el archivo " + nombreArchivo +
+    				" en la carpeta " + rutaPadre);
+    	}
+    	
     }
 
 	@Override
