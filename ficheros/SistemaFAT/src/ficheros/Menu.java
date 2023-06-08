@@ -103,10 +103,10 @@ public class Menu {
 
     private static void mostrarMenu() {
         System.out.println("======== MENÚ ========");
-        System.out.println("1. Crear archivo");
-        System.out.println("2. Mover archivo");
-        System.out.println("3. Borrar archivo");
-        System.out.println("4. Copiar archivo");
+        System.out.println("1. Crear");
+        System.out.println("2. Mover");
+        System.out.println("3. Borrar");
+        System.out.println("4. Copiar");
         System.out.println("5. Salir");
         System.out.print("Selecciona una opción: ");
     }
@@ -115,7 +115,7 @@ public class Menu {
         System.out.println("======== MENÚ CREAR ========");
         System.out.println("1. Crear archivo");
         System.out.println("2. Crear directorio");
-        System.out.println("3. Salir");
+        System.out.println("3. Salir del menu de Creación");
         System.out.print("Selecciona una opción: ");
     }
 
@@ -123,7 +123,7 @@ public class Menu {
         System.out.println("======== MENÚ BORRAR ========");
         System.out.println("1. Borrar archivo");
         System.out.println("2. Borrar directorio");
-        System.out.println("3. Salir");
+        System.out.println("3. Salir del menu de Borrado");
         System.out.print("Selecciona una opción: ");
     }
 }
