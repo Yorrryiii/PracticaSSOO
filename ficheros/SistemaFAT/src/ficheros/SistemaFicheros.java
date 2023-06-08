@@ -32,7 +32,7 @@ public class SistemaFicheros {
     	ArrayList<Cluster> listaClustersLibres = buscarClustersLibres(1);
     	
         if(listaClustersLibres.size() == 0) {
-            System.err.println("Error: no hay suficientes clusters libres para crear el directorio, APRENDE A CONTAR");
+            System.err.println("Error: no hay suficientes clusters libres para crear el directorio");
         }
         else {
             
@@ -44,7 +44,6 @@ public class SistemaFicheros {
 
                 escribirEntradasFAT(listaClustersLibres);
                 
-            	System.out.println("Esta es tu carpeta mi REY: " + directorioDondeGuardarArchivo.nombre);
             	crearEntradaDirectorioEnDirectorio(nombreDirectorio, true,
                 		directorioDondeGuardarArchivo, listaClustersLibres.get(0).numCluster);
             }
@@ -60,7 +59,7 @@ public class SistemaFicheros {
         ArrayList<Cluster> listaClustersLibres = buscarClustersLibres(tamanoArchivoEnClusters);
 
         if(listaClustersLibres.size() < tamanoArchivoEnClusters) {
-            System.err.println("Error: no hay suficientes clusters libres para crear el archivo, APRENDE A CONTAR");
+            System.err.println("Error: no hay suficientes clusters libres para crear el archivo");
         }
         else {
             
@@ -72,11 +71,10 @@ public class SistemaFicheros {
 
                 escribirEntradasFAT(listaClustersLibres);
                 
-            	System.out.println("Esta es tu carpeta mi REY: " + directorioDondeGuardarArchivo.nombre);
             	crearEntradaDirectorioEnDirectorio(nombreDelArchivo, false,
                 		directorioDondeGuardarArchivo, listaClustersLibres.get(0).numCluster);
             }
-            else {System.err.println("Error: la ruta especificada no existe");}
+            else {System.err.println("Error: la ruta de creacion especificada no existe");}
             
         }
 
@@ -149,7 +147,8 @@ public class SistemaFicheros {
         for(int i = 0; i < current.entradasDIR.size(); i++) {
             if(current.entradasDIR.get(i).esDirectorio) {
                 if(current.entradasDIR.get(i).nombre.equals(ruta[currentPosition])
-                		&& ruta.length == currentPosition + 1) {
+                		&& (ruta.length == currentPosition + 1 || (ruta.length == currentPosition + 2 && 
+                        ruta[ruta.length-1].equals("")))) {
                     return (Directorio) clusters.get(current.entradasDIR.get(i).clusterInicio);
                 }
                 else if(current.entradasDIR.get(i).nombre.equals(ruta[currentPosition])){
@@ -183,12 +182,10 @@ public class SistemaFicheros {
 
     }
 
-    public void borrarArchivo(String rutaCompleta) {
-    	
-    	String[] rutaArchivo = rutaCompleta.split("/");
-    	//Rescatamos el nombre del archivo, que estara en la ultima posicion del array
-    	String nombreArchivo = rutaArchivo[rutaArchivo.length-1];
-    	//Creamos una String para volcar dentro de esta la ruta del padre
+    private String obtenerRutaPadre(String rutaCompleta) {
+
+        String[] rutaArchivo = rutaCompleta.split("/");
+        //Creamos una String para volcar dentro de esta la ruta del padre
     	String rutaPadre = new String();
     	
     	//La ruta padre del archivo siempre sera de uno menos que la del hijo
@@ -203,6 +200,54 @@ public class SistemaFicheros {
     		}
     		
     	}
+
+        return rutaPadre;
+
+    }
+
+    private void borrarEntradasFAT(int numCluster) {
+
+        entradas.get(numCluster).disponible = true;
+        while(!entradas.get(numCluster).fin) {
+		    //Si no indica fin cierto, nos moveremos para poner todo a disponible
+        	numCluster = entradas.get(numCluster).siguiente;
+        	entradas.get(numCluster).disponible = true;
+        }
+
+    }
+
+    public void borrarDirectorio(String rutaCompleta) {
+    	
+    	String[] ruta = rutaCompleta.split("/");
+    	
+    	Directorio dir = buscarDirectorioPorNombre(rutaCompleta);
+    	
+    	if(dir == null) {
+    		System.err.println("Error: el directorio especificado no existe");
+    		return;
+    	}
+    	else if(dir.equals(root)) {
+    		formatear();
+    	}
+    	else {
+    		for(int i = 0; i < dir.getEntradasDIR().size(); i++) {
+    			//Obtenemos el numero del cluster en el que se encuentra lo que haya en la entrada
+    			int numCluster = dir.getEntradasDIR().get(i).clusterInicio;
+    			borrarEntradasFAT(numCluster);
+    		}
+    		//Al final, ponemos el disponible a cierto de la entrada donde esta la carpeta
+    		entradas.get(dir.numCluster).disponible = true;
+    	}
+    	
+    }
+
+    public void borrarArchivo(String rutaCompleta) {
+    	
+    	String[] rutaArchivo = rutaCompleta.split("/");
+    	//Rescatamos el nombre del archivo, que estara en la ultima posicion del array
+    	String nombreArchivo = rutaArchivo[rutaArchivo.length-1];
+        //Creamos una String y llamamos a la funcion obtenerRutaPadre
+    	String rutaPadre = obtenerRutaPadre(rutaCompleta);
     	
     	//Rescatamos el directorio en el que esta el archivo
     	Directorio dir = buscarDirectorioPorNombre(rutaPadre);
@@ -217,12 +262,7 @@ public class SistemaFicheros {
     			if(dir.getEntradasDIR().get(i).nombre.equals(nombreArchivo)) {
     				int numCluster = dir.getEntradasDIR().get(i).clusterInicio;
         			//Ponemos a cierto (true) el disponible para indicar que esta libre y se puede escribir
-        			entradas.get(numCluster).disponible = true;
-        			while(!entradas.get(numCluster).fin) {
-        				//Si no indica fin cierto, nos moveremos para poner todo a disponible
-        				numCluster = entradas.get(numCluster).siguiente;
-        				entradas.get(numCluster).disponible = true;
-        			}
+        			borrarEntradasFAT(numCluster);
         			return; //Si lo encuentra dejamos de comprobar el resto
     			}
     			
@@ -232,6 +272,88 @@ public class SistemaFicheros {
     				" en la carpeta " + rutaPadre);
     	}
     	
+    }
+
+    public void mover(String archivo, String carpetaNueva) {
+
+        //Obtenemos la ruta padre del archivo
+        String rutaPadre = obtenerRutaPadre(archivo);
+
+        String[] ruta = archivo.split("/");
+    	//Rescatamos el nombre del archivo, que estara en la ultima posicion del array
+    	String nombre = ruta[ruta.length-1];
+        
+        //Obtenemos los directorios en el que esta actualmente el archivo y al que lo queremos mover
+        Directorio dondeEsta = buscarDirectorioPorNombre(rutaPadre);
+        Directorio dondeMovemos = buscarDirectorioPorNombre(carpetaNueva);
+
+        //Comprobamos si existen los directorios que nos ha pedido el usuario
+        if(dondeEsta == null) {
+            System.err.println("Error: el archivo o ruta especificada no existe");
+            return;
+        }
+        if(dondeMovemos == null) {
+            System.err.println("Error: la ruta de destino no ha sido encontrada");
+            return;
+        }
+
+        //Si los directorios existen, pasamos a mover el archivo
+        for(int i = 0; i < dondeEsta.getEntradasDIR().size(); i++) {
+            if(dondeEsta.getEntradasDIR().get(i).nombre.equals(nombre)) {
+                //Movemos la entrada a la nueva carpeta y la borramos de la entrada vieja
+                dondeMovemos.getEntradasDIR().add(dondeEsta.getEntradasDIR().get(i));
+                dondeEsta.getEntradasDIR().remove(i);
+                //Si lo ha encontrado, dejamos de buscar
+                return;
+            }
+        }
+        //Si no lo ha encontrado, imprimimos un error, ya que quiere decir que el archivo no existe
+        System.err.println("Error, el archivo o carpeta " + nombre + " no se ha encontrado en la ruta " + rutaPadre);
+
+    }
+
+    public void copiarArchivo(String archivo, String carpetaDestino) {
+
+        //Obtenemos la ruta padre del archivo
+        String rutaPadre = obtenerRutaPadre(archivo);
+
+        String[] ruta = archivo.split("/");
+    	//Rescatamos el nombre del archivo, que estara en la ultima posicion del array
+    	String nombre = ruta[ruta.length-1];
+        
+        //Obtenemos el directorio en el que esta actualmente el archivo
+        Directorio dondeEsta = buscarDirectorioPorNombre(rutaPadre);
+
+        //Comprobamos que el direcotorio donde esta existe
+        if(dondeEsta == null) {
+            System.err.println("Error: el archivo especificado no existe");
+            return;
+        }
+        
+        //Si existe, contamos el numero de clusters que tiene el archivo que buscamos. Buscamos el archivo
+        int numeroDeClustersArchivo = 0;
+        for(int i = 0; i < dondeEsta.getEntradasDIR().size(); i++) {
+
+            if(!dondeEsta.getEntradasDIR().get(i).esDirectorio) {
+                if(dondeEsta.getEntradasDIR().get(i).equals(nombre)) {
+                    int currentCluster = dondeEsta.getEntradasDIR().get(i).clusterInicio;
+                    numeroDeClustersArchivo++;
+                    while(!entradas.get(currentCluster).fin) {
+		                //Si no indica fin cierto, nos moveremos para poner todo a disponible
+        	            currentCluster = entradas.get(currentCluster).siguiente;
+        	            numeroDeClustersArchivo++;
+                    }
+                    //Como lo ha encontrado, creamos un archivo nuevo con ese numero de clusters y con el mismo nombre que
+                    crearArchivo(nombre, numeroDeClustersArchivo, carpetaDestino);
+                    //Cuando lo cree, nos saldremos de la funcion
+                    return;
+                }
+            }
+
+        }
+        //Si se sale del bucle, quiere decir que no ha encontrado el archivo, por lo que mostraremos mensaje de error
+        System.err.println("Error: el archivo " + nombre + " no se encuentra en la ruta " + rutaPadre);
+
     }
 
 	@Override
