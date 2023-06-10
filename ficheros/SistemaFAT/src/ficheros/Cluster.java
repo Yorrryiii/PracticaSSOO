@@ -9,7 +9,7 @@ public class Cluster {
 
     @Override
     public String toString() {
-        return "\n" +numCluster + ": Empty";
+        return numCluster + ": Empty";
     }
     
 }

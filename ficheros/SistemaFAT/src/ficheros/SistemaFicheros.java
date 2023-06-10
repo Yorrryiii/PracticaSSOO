@@ -335,7 +335,7 @@ public class SistemaFicheros {
         for(int i = 0; i < dondeEsta.getEntradasDIR().size(); i++) {
 
             if(!dondeEsta.getEntradasDIR().get(i).esDirectorio) {
-                if(dondeEsta.getEntradasDIR().get(i).equals(nombre)) {
+                if(dondeEsta.getEntradasDIR().get(i).nombre.equals(nombre)) {
                     int currentCluster = dondeEsta.getEntradasDIR().get(i).clusterInicio;
                     numeroDeClustersArchivo++;
                     while(!entradas.get(currentCluster).fin) {

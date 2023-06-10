@@ -33,8 +33,22 @@ public class Directorio extends Cluster {
         this.nombre = nombre;
     }
 
+    private String showEntries() {
+        String entries = new String();
+        entries += "Entradas:\n";
+        for(int i = 0; i < entradasDIR.size(); i++) {
+            entries += entradasDIR.get(i) + "\n";
+        }
+        return entries;
+    }
+
     @Override
     public String toString() {
-        return "\n"+ super.numCluster + ": Directorio [nombre=" + nombre + ", entradasDIR=" + entradasDIR + "]";
+        if(super.numCluster < 0) {
+            return "Directorio: " + nombre + "\n" + showEntries();
+        }
+        else {
+            return super.numCluster + ": Directorio: " + nombre + "\n" + showEntries();
+        }
     }
 }

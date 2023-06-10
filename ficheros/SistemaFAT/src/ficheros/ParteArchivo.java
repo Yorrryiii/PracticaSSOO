@@ -18,6 +18,6 @@ public class ParteArchivo extends Cluster {
 
     @Override
     public String toString(){
-    	return "\n"+ super.numCluster + ": " + contenido;
+    	return super.numCluster + ": " + contenido;
     }
 }

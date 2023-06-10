@@ -10,7 +10,7 @@ public class Menu {
         scanner = new Scanner(System.in); // Inicializar la instancia de Scanner
     }
 
-    public void CantidadClusters() {
+    public void launchFAT() {
         System.out.print("Ingresa el tamaño del sistema de archivos: ");
         int tamaño = scanner.nextInt();
         scanner.nextLine(); // Limpiar el buffer
@@ -89,6 +89,9 @@ public class Menu {
                     sistemaFicheros.copiarArchivo(rutaCopiar, destinoCopia);
                     break;
                 case 5:
+                    showFAT();
+                    break;
+                case 6:
                     System.out.println("Saliendo del programa...");
                     break;
                 default:
@@ -96,22 +99,23 @@ public class Menu {
                     break;
             }
             System.out.println();
-        } while (opcion != 5);
+        } while (opcion != 6);
 
         scanner.close();
     }
 
-    private static void mostrarMenu() {
+    private void mostrarMenu() {
         System.out.println("======== MENÚ ========");
         System.out.println("1. Crear");
         System.out.println("2. Mover");
         System.out.println("3. Borrar");
         System.out.println("4. Copiar");
-        System.out.println("5. Salir");
+        System.out.println("5. Mostrar FAT");
+        System.out.println("6. Salir");
         System.out.print("Selecciona una opción: ");
     }
 
-    private static void mostrarSubMenuCrear() {
+    private void mostrarSubMenuCrear() {
         System.out.println("======== MENÚ CREAR ========");
         System.out.println("1. Crear archivo");
         System.out.println("2. Crear directorio");
@@ -119,12 +123,28 @@ public class Menu {
         System.out.print("Selecciona una opción: ");
     }
 
-    private static void mostrarSubMenuBorrar() {
+    private void mostrarSubMenuBorrar() {
         System.out.println("======== MENÚ BORRAR ========");
         System.out.println("1. Borrar archivo");
         System.out.println("2. Borrar directorio");
         System.out.println("3. Salir del menu de Borrado");
         System.out.print("Selecciona una opción: ");
+    }
+
+    private void showFAT() {
+        System.out.println("======== ENTRADAS FAT ========");
+        for(int i = 0; i < sistemaFicheros.entradas.size(); i++) {
+            System.out.println(i + ": " + sistemaFicheros.entradas.get(i));
+        }
+        System.out.println();
+        System.out.println("======== DIRECTORIO ROOT (root/) ========");
+        System.out.println(sistemaFicheros.root);
+        System.out.println();
+        System.out.println("======== CLUSTERS ========");
+        for(int i = 0; i < sistemaFicheros.clusters.size(); i++) {
+            System.out.println(sistemaFicheros.clusters.get(i));
+        }
+        System.out.println();
     }
 }
 

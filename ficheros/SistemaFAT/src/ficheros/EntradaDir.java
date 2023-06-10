@@ -41,8 +41,14 @@ public class EntradaDir {
 
     @Override
 	public String toString() {
-		return "\nEntradaDir [nombre=" + nombre + ", esDirectorio=" + esDirectorio + ", clusterInicio=" + clusterInicio
-				+ "]";
+        String tipo = new String();
+        if(esDirectorio) {
+            tipo = "Directorio";
+        }
+        else {
+            tipo = "Archivo";
+        }
+		return "Nombre: " + nombre + " | Tipo: " + tipo + " | Cluster Inicio: " + clusterInicio;
 	}
 
 }
