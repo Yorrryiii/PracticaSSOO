@@ -33,11 +33,13 @@ Para poder lanzar la aplicacion desde un ordenador, lo podremos hacer de multipl
 Cuando la aplicacion se lanza de primeras, se lanzara con un unico directorio creado. Dicho directorio es el directorio raiz, el cual se referenciara como root o root/.
 
 Para empezar a crear archivos, se llamara al metodo crear mostrado por la consola. Ejemplo de crearcion de un archivo en la carpeta root/:
+
 <img width="302" alt="Captura de pantalla 2023-06-11 a las 18 41 23" src="https://github.com/Yorrryiii/PracticaSSOO/assets/118160820/a7158910-3e68-462f-9184-54e1411b3ab7">
 
 El tamaño SIEMPRE sera en CLUSTERS.
 
 Ejemplo para la creacion de un directorio en la carpeta root/:
+
 <img width="302" alt="Captura de pantalla 2023-06-11 a las 18 41 23" src="https://github.com/Yorrryiii/PracticaSSOO/assets/118160820/2cf78873-ee7d-4a5f-bd53-5179ea5a4441">
 
 Nota: los archivos creados, copiados, movidos o borrados son solo una simulacion. El programa no esta comunicado con los archivos que contiene el ordenador.
