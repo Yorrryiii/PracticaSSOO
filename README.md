@@ -24,6 +24,7 @@ Actualmente el proyecto es totalmente funcional por consola. Aunque se esta desa
 La aplicacion permite, en el momento de lanzamiento, elegir un tamaño de clusters que querremos que contenga nuestro sistema de ficheros FAT.
 En primer momento de lanzamiento, se crearan clusters vacios, como se muestra en la siguiente imagen:
 (Ejemplo para una FAT creada con 15 clusters)
+
 <img width="368" alt="Estado FAT inicialmente" src="https://github.com/Yorrryiii/PracticaSSOO/assets/118160820/4f3408dd-2522-472b-bd8e-b616a4e52fb1">
 
 Para poder lanzar la aplicacion desde un ordenador, lo podremos hacer de multiples formas:
@@ -45,8 +46,11 @@ Ejemplo para la creacion de un directorio en la carpeta root/:
 Nota: los archivos creados, copiados, movidos o borrados son solo una simulacion. El programa no esta comunicado con los archivos que contiene el ordenador.
 
 Para referenciar a una ruta completa cuando el programa solicite el nombre de algun archivo/carpeta, se hara mediante la representacion de la ruta completa.
+
 Ejemplo direcotio: root/NotasInformatica/2_Curso/
+
 Ejemplo archivo: root/InfoComunidadesESP/zaragoza.dat
+
 (Dichos ejemplos son rutas ficticias que no existen dentro en el momento de creación)
 
 Nota: al especificar un direcotio, puedes o no incluir la barra del final de este.
