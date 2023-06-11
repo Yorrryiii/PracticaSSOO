@@ -217,11 +217,13 @@ public class SistemaFicheros {
     }
 
     public void borrarDirectorio(String rutaCompleta) {
-    	
-    	String[] ruta = rutaCompleta.split("/");
+
+        String rutaPadre = obtenerRutaPadre(rutaCompleta);
     	
     	Directorio dir = buscarDirectorioPorNombre(rutaCompleta);
+        Directorio dondeEstaDir = buscarDirectorioPorNombre(rutaPadre);
     	
+        //Si no existe la ruta del directorio, no hacemos nada
     	if(dir == null) {
     		System.err.println("Error: el directorio especificado no existe");
     		return;
@@ -237,6 +239,13 @@ public class SistemaFicheros {
     		}
     		//Al final, ponemos el disponible a cierto de la entrada donde esta la carpeta
     		entradas.get(dir.numCluster).disponible = true;
+            //Borramos la entrada de dicho directorio de donde se haye
+            for(int i = 0; i < dondeEstaDir.getEntradasDIR().size(); i++) {
+                if(dondeEstaDir.getEntradasDIR().get(i).nombre.equals(dir.nombre)) {
+                    dondeEstaDir.getEntradasDIR().remove(i);
+                }
+            }
+
     	}
     	
     }
