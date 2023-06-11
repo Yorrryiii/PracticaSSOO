@@ -269,10 +269,13 @@ public class SistemaFicheros {
     	else {
     		for(int i = 0; i < dir.getEntradasDIR().size(); i++) {
     			
-    			if(dir.getEntradasDIR().get(i).nombre.equals(nombreArchivo)) {
+    			if(dir.getEntradasDIR().get(i).nombre.equals(nombreArchivo) &&
+                !dir.getEntradasDIR().get(i).esDirectorio) {
     				int numCluster = dir.getEntradasDIR().get(i).clusterInicio;
         			//Ponemos a cierto (true) el disponible para indicar que esta libre y se puede escribir
         			borrarEntradasFAT(numCluster);
+                    //Borramos la entrada del directorio para que no se siga mostrando
+                    dir.getEntradasDIR().remove(i);
         			return; //Si lo encuentra dejamos de comprobar el resto
     			}
     			
