@@ -233,12 +233,11 @@ public class SistemaFicheros {
     	}
     	else {
     		for(int i = 0; i < dir.getEntradasDIR().size(); i++) {
-    			//Obtenemos el numero del cluster en el que se encuentra lo que haya en la entrada
+                
     			if(dir.getEntradasDIR().get(i).esDirectorio) {
     				
-    				String[] ruta = rutaCompleta.split("/");
     				//Si acaba en /
-    				if(ruta[ruta.length-1].equals("")) {
+    				if(rutaCompleta.charAt(rutaCompleta.length()-1) == '/') {
     					borrarDirectorio(rutaCompleta + dir.getEntradasDIR().get(i).nombre);
     				}
     				else {
@@ -247,6 +246,7 @@ public class SistemaFicheros {
     				
     			} else {
     				
+    				//Obtenemos el numero del cluster en el que se encuentra lo que haya en la entrada
     				int numCluster = dir.getEntradasDIR().get(i).clusterInicio;
         			borrarEntradasFAT(numCluster);
         			
