@@ -241,7 +241,8 @@ public class SistemaFicheros {
     		entradas.get(dir.numCluster).disponible = true;
             //Borramos la entrada de dicho directorio de donde se haye
             for(int i = 0; i < dondeEstaDir.getEntradasDIR().size(); i++) {
-                if(dondeEstaDir.getEntradasDIR().get(i).nombre.equals(dir.nombre)) {
+                if(dondeEstaDir.getEntradasDIR().get(i).nombre.equals(dir.nombre) && 
+                dondeEstaDir.getEntradasDIR().get(i).esDirectorio) {
                     dondeEstaDir.getEntradasDIR().remove(i);
                 }
             }
